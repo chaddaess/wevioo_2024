@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Account;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
@@ -47,7 +47,7 @@ class RegistrationController extends AbstractController
                     ->from(new Address('chadhachadha2000@gmail.com', 'Wevioo Mailing Service'))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
+                    ->htmlTemplate('account/registration/confirmation_email.html.twig')
             );
 
             // do anything else you need here, like send an email
@@ -55,7 +55,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('registration/register.html.twig', [
+        return $this->render('account/registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
     }
