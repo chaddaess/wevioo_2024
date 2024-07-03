@@ -6,8 +6,12 @@
 
 h1{
     margin: 2em 0;
-    text-align: center;
+    text-align: center !important;
+    align-self: center;
 }
 .container{
     padding: 0 4em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
