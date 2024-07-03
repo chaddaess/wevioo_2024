@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Event;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,7 +20,15 @@ class EventType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('location')
-            ->add('category')
+            ->add('category',ChoiceType::class,[
+                'choices'=>[
+                    'Education'=>'Education',
+                    'Entertainment'=>'Entertainment',
+                    'Professional'=>'Professional',
+                    'Sport & Fitness'=>'Sport & Fitness',
+                    'Community& Charity'=>'Community/Charity'
+                ]
+            ])
             ->add('picture', FileType::class, [
                 'required'=>false,
                 'mapped' => false,

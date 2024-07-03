@@ -1,0 +1,60 @@
+{% extends 'base_2.html.twig' %}
+
+{% block title %}Admin sign up{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/login-user-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('fonts/material-icon/css/material-design-iconic-font.min.css') }}">
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    <style>
+        ul{
+            color: #960808;
+            list-style-type: none;
+
+        }
+        svg{
+            margin-bottom: 1em;
+        }
+    </style>
+
+    <!-- Sign up form -->
+    <section class="signup">
+        <div class="container">
+            <div class="signup-content">
+                <div class="signup-form">
+                    <h2 class="form-title">Sign up</h2>
+
+                    {{ form_start(registrationForm) }}
+                    <div class="form-group">
+                        <label for="email"><?xml version="1.0" ?><svg viewBox="0 0 32 32" height="30" width="30" xmlns="http://www.w3.org/2000/svg"><title/><g id="about"><path d="M16,16A7,7,0,1,0,9,9,7,7,0,0,0,16,16ZM16,4a5,5,0,1,1-5,5A5,5,0,0,1,16,4Z"/><path d="M17,18H15A11,11,0,0,0,4,29a1,1,0,0,0,1,1H27a1,1,0,0,0,1-1A11,11,0,0,0,17,18ZM6.06,28A9,9,0,0,1,15,20h2a9,9,0,0,1,8.94,8Z"/></g></svg></label>
+                        {{ form_errors(registrationForm.username,{'attr': {'class': 'error'}})}}
+                        {{ form_widget(registrationForm.username, {'attr': {'id': 'email'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <label for="pass"><?xml version="1.0" ?><svg data-name="Capa 1" id="Capa_1" viewBox="0 0 20 19.84" height="35" width="35" xmlns="http://www.w3.org/2000/svg"><path d="M10,4.56a5.36,5.36,0,1,0,5.36,5.36A5.36,5.36,0,0,0,10,4.56Zm0,10a4.61,4.61,0,1,1,4.61-4.61A4.62,4.62,0,0,1,10,14.53Z"/><path d="M10,7.71A1.12,1.12,0,0,0,8.88,8.83a1.11,1.11,0,0,0,.75,1.05v2.56a.37.37,0,0,0,.37.37.38.38,0,0,0,.38-.37V9.88A1.12,1.12,0,0,0,10,7.71Zm0,.75a.38.38,0,0,1,.37.37.37.37,0,1,1-.74,0A.38.38,0,0,1,10,8.46Z"/></svg></label>
+                        {{ form_errors(registrationForm.plainPassword,{'attr': {'class': 'error'}})}}
+                        {{ form_widget(registrationForm.plainPassword, {'attr': {'id': 'pass'}}) }}
+                    </div>
+                    <div class="form-group form-button">
+                        <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
+                    </div>
+                    {{ form_end(registrationForm) }}
+
+                </div>
+                <div class="signup-image">
+                    <figure><img src="{{ asset('images/signup-image.jpg') }}" alt="sing up image"></figure>
+                    <a href="{{ path('app_admin_login') }}" class="signup-image-link">I am already a member</a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
