@@ -32,6 +32,9 @@ class Event
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $creator = null;
+
     #[ORM\Column(nullable: true)]
     public function getId(): ?int
     {
@@ -106,6 +109,18 @@ class Event
     public function setPicture(?string $picture): static
     {
         $this->picture = $picture;
+
+        return $this;
+    }
+
+    public function getCreator(): ?string
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?string $creator): static
+    {
+        $this->creator = $creator;
 
         return $this;
     }

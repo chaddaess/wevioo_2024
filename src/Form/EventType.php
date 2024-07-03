@@ -32,6 +32,7 @@ class EventType extends AbstractType
                         'mimeTypesMessage' => 'Please upload a valid PDF document',
                     ])
                 ],
+
             ]);
     }
 
