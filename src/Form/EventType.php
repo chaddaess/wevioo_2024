@@ -20,12 +20,10 @@ class EventType extends AbstractType
             ])
             ->add('location')
             ->add('category')
-            ->add('organiser')
             ->add('picture', FileType::class, [
                 'mapped' => false,
                 'constraints' => [
                     new File([
-                        'maxSize' => '1024k',
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/png'
