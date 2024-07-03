@@ -21,6 +21,7 @@ class EventType extends AbstractType
             ->add('location')
             ->add('category')
             ->add('picture', FileType::class, [
+                'required'=>false,
                 'mapped' => false,
                 'constraints' => [
                     new File([

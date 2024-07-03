@@ -34,7 +34,7 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $this->saveEventPicture($form, $slugger, $event);
+            $this->saveEventPicture($form, $slugger, $event,"new");
             $entityManager->persist($event);
             $entityManager->flush();
 
@@ -62,7 +62,7 @@ class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->saveEventPicture($form, $slugger, $event);
+            $this->saveEventPicture($form, $slugger, $event,"edit");
             $entityManager->flush();
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
@@ -91,7 +91,7 @@ class EventController extends AbstractController
      * @param Event $event
      * @return void
      */
-    public function saveEventPicture(FormInterface $form, SluggerInterface $slugger, Event $event): void
+    public function saveEventPicture(FormInterface $form, SluggerInterface $slugger, Event $event,string $origin): void
     {
         $file = $form->get('picture')->getData();
         if ($file) {
@@ -106,6 +106,13 @@ class EventController extends AbstractController
                 dd("oops! error on upload");
             }
             $event->setPicture($newFilename);
+
+        }else{
+            if($origin=="new") {
+                $newFilename = 'no-image.png';
+                $event->setPicture($newFilename);
+            }
         }
+
     }
 }
