@@ -5,9 +5,10 @@
 }
 
 h1{
-    margin: 2em 0;
+    width: 100%;
+    margin: 2em auto;
     text-align: center !important;
-    align-self: center;
+    align-self: center !important;
 }
 .container{
     padding: 0 4em;
