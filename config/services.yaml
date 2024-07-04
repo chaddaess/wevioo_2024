@@ -19,4 +19,12 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Service\TypeSenseService:
+        arguments:
+            $apiKey: '%env(TYPESENSE_API_KEY)%'
+            $host:   '%env(TYPESENSE_HOST)%'
+            $port:   '%env(TYPESENSE_PORT)%'
+            $protocol: '%env(TYPESENSE_PROTOCOL)%'
+            $connectionTimeout: '%env(TYPESENSE_TIMEOUT)%'
+
 
