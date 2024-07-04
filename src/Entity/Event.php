@@ -36,6 +36,12 @@ class Event
     private ?string $creator = null;
 
     #[ORM\Column(nullable: true)]
+    private ?int $interested = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $attending = null;
+
+    #[ORM\Column(nullable: true)]
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +127,30 @@ class Event
     public function setCreator(?string $creator): static
     {
         $this->creator = $creator;
+
+        return $this;
+    }
+
+    public function getInterested(): ?int
+    {
+        return $this->interested;
+    }
+
+    public function setInterested(?int $interested): static
+    {
+        $this->interested = $interested;
+
+        return $this;
+    }
+
+    public function getAttending(): ?int
+    {
+        return $this->attending;
+    }
+
+    public function setAttending(?int $attending): static
+    {
+        $this->attending = $attending;
 
         return $this;
     }
