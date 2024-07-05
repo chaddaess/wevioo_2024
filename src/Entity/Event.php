@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -46,6 +48,18 @@ class Event
 
     #[ORM\Column(length: 10000, nullable: true)]
     private ?string $Comments = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'goingTo')]
+    private Collection $attendingUsers;
+
+
+    public function __construct()
+    {
+        $this->attendingUsers = new ArrayCollection();
+    }
 
     #[ORM\Column(nullable: true)]
     public function getId(): ?int
@@ -185,4 +199,30 @@ class Event
         return $this;
     }
 
+    /**
+     * @return Collection<int, User>
+     */
+    public function getAttendingUsers(): Collection
+    {
+        return $this->attendingUsers;
+    }
+
+    public function addAttendingUser(User $attendingUser): static
+    {
+        if (!$this->attendingUsers->contains($attendingUser)) {
+            $this->attendingUsers->add($attendingUser);
+            $attendingUser->addGoingTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttendingUser(User $attendingUser): static
+    {
+        if ($this->attendingUsers->removeElement($attendingUser)) {
+            $attendingUser->removeGoingTo($this);
+        }
+
+        return $this;
+    }
 }

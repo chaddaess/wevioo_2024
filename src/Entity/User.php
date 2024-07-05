@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -35,6 +37,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\ManyToMany(targetEntity: Event::class)]
+    #[ORM\JoinTable(name: 'user_event_interested')]
+    private Collection $interestedIn;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'attendingUsers')]
+    #[ORM\JoinTable(name: 'user_event_attending')]
+    private Collection $goingTo;
+    public function __construct()
+    {
+        $this->interestedIn = new ArrayCollection();
+        $this->goingTo = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,4 +143,53 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getInterestedIn(): Collection
+    {
+        return $this->interestedIn;
+    }
+
+    public function addInterestedIn(Event $interestedIn): static
+    {
+        if (!$this->interestedIn->contains($interestedIn)) {
+            $this->interestedIn->add($interestedIn);
+        }
+
+        return $this;
+    }
+
+    public function removeInterestedIn(Event $interestedIn): static
+    {
+        $this->interestedIn->removeElement($interestedIn);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getGoingTo(): Collection
+    {
+        return $this->goingTo;
+    }
+
+    public function addGoingTo(Event $goingTo): static
+    {
+        if (!$this->goingTo->contains($goingTo)) {
+            $this->goingTo->add($goingTo);
+        }
+
+        return $this;
+    }
+
+    public function removeGoingTo(Event $goingTo): static
+    {
+        $this->goingTo->removeElement($goingTo);
+
+        return $this;
+    }
+
 }

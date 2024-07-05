@@ -3,8 +3,11 @@
 namespace App\Controller\Account;
 
 use App\Entity\Event;
+use App\Entity\User;
 use App\Service\EventService;
 use App\Service\TypeSenseService;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 class HomeController extends AbstractController
 {
 
-    public function __construct(private readonly TypeSenseService $typeSenseService,private  readonly EventService $eventService){
+    public function __construct(private readonly TypeSenseService $typeSenseService,private  readonly EventService $eventService,private EntityManagerInterface $entityManager){
 
     }
 
@@ -63,8 +66,51 @@ class HomeController extends AbstractController
     #[Route('/event/{id}', name: 'app_user_event_show', methods: ['GET'])]
     public function show(Event $event): Response
     {
+        $email=$this->getUser()->getUserIdentifier();
+        $user=$this->entityManager->getRepository(User::class)->findOneBy(['email'=>$email]);
+        $isInterested = $user->getInterestedIn()->contains($event);
+        $isAttending = $user->getGoingTo()->contains($event);
         return $this->render('account/event/event-details.html.twig', [
             'event' => $event,
+            'isInterested' => $isInterested,
+            'isAttending' => $isAttending,
+        ]);
+    }
+    #[Route('/event/{id}/interested', name: 'app_user_event_toggle_interested', methods: ['GET'])]
+    public function toggleInterested(Event $event): Response
+    {
+        $email=$this->getUser()->getUserIdentifier();
+        $user=$this->entityManager->getRepository(User::class)->findOneBy(['email'=>$email]);
+        if(!in_array($event,$user->getInterestedIn()->toArray())){
+            $user->addInterestedIn($event);
+            $event->setInterested($event->getInterested()+1);
+        }else{
+            $user->removeInterestedIn($event);
+            $event->setInterested($event->getInterested()-1);
+
+        }
+        $this->entityManager->flush();
+        return $this->redirectToRoute('app_user_event_show',[
+            'id'=>$event->getId()
+        ]);
+    }
+
+    #[Route('/event/{id}/going', name: 'app_user_event_toggle_going', methods: ['GET'])]
+    public function toggleGoing(Event $event): Response
+    {
+        $email=$this->getUser()->getUserIdentifier();
+        $user=$this->entityManager->getRepository(User::class)->findOneBy(['email'=>$email]);
+        if(!in_array($event,$user->getGoingTo()->toArray())){
+            $user->addGoingTo($event);
+            $event->setAttending($event->getAttending()+1);
+        }else{
+            $user->removeGoingTo($event);
+            $event->setAttending($event->getAttending()-1);
+
+        }
+        $this->entityManager->flush();
+        return $this->redirectToRoute('app_user_event_show',[
+            'id'=>$event->getId()
         ]);
     }
 
