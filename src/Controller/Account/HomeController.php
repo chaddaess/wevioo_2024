@@ -21,11 +21,12 @@ class HomeController extends AbstractController
 
     public function getCoordinates(string $location):array{
         //TODO: implement this function after integrating google maps api
-        $coordinates=[];
+        //dummy data for testing
+        $coordinates=[48.86093481609114, 2.33698396872901];
         return $coordinates;
     }
     #[IsGranted('ROLE_USER')]
-    #[Route('/home', name: 'app_home')]
+    #[Route('/explore', name: 'app_home')]
     public function index(Request $request): Response
     {
         $hits=[];
@@ -47,14 +48,14 @@ class HomeController extends AbstractController
             }
             $response=$this->typeSenseService->search('events',$keywords,$filters);
             $hits=$response;
-            dd($response);
+//            dd($response);
 
         }
 
         return $this->render('account/index.html.twig', [
             'controller_name' => 'HomeController',
             'eventCategories'=>$this->eventService->getEventCategories(),
-            'hits'=>$hits
+            'events'=>$hits
         ]);
     }
 

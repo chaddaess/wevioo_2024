@@ -12,16 +12,18 @@
             display: flex;
             flex-direction: row;
             padding-top: 5em;
+
         }
         .found-events{
             width: 80%;
-            border: 1px solid magenta;
+            background-color: white;
+            border-radius: 20px;
         }
     </style>
     <div class="main-container">
         {% include ('account/find-event-form.html.twig') %}
         <div class="found-events">
-
+            {% include('account/event/event-list.html.twig') %}
         </div>
 
     </div>
