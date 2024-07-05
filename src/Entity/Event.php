@@ -41,6 +41,12 @@ class Event
     #[ORM\Column(nullable: true)]
     private ?int $attending = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $TicketLink = null;
+
+    #[ORM\Column(length: 10000, nullable: true)]
+    private ?string $Comments = null;
+
     #[ORM\Column(nullable: true)]
     public function getId(): ?int
     {
@@ -151,6 +157,30 @@ class Event
     public function setAttending(?int $attending): static
     {
         $this->attending = $attending;
+
+        return $this;
+    }
+
+    public function getTicketLink(): ?string
+    {
+        return $this->TicketLink;
+    }
+
+    public function setTicketLink(?string $TicketLink): static
+    {
+        $this->TicketLink = $TicketLink;
+
+        return $this;
+    }
+
+    public function getComments(): ?string
+    {
+        return $this->Comments;
+    }
+
+    public function setComments(?string $Comments): static
+    {
+        $this->Comments = $Comments;
 
         return $this;
     }

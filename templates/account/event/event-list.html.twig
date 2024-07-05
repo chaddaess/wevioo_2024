@@ -22,7 +22,7 @@
     <ul class="cards">
         {% for event in events %}
             <li>
-                <div class="card" title="edit event">
+                <a href="{{ path('app_user_event_show',{'id':event.document.id}) }}" class="card" title="edit event">
                     <img src="{{ asset('/uploads/' ~ event.document.picture) }}" class="card__image" alt="" />
                     <div class="card__overlay">
                         <div class="card__header">
@@ -31,7 +31,7 @@
                                 <h3 class="card__title">{{ event.document.name }}</h3>
                                 <p class="card__status">{{ event.document.category }}</p>
                                 <div style="display: flex;flex-direction: row;align-items: center">
-                                    <p class="card__status"> {{ event.document.interested }}interested • {{ event.document.attending}} attending  </p>
+                                    <p class="card__status"> {{ event.document.interested }} interested • {{ event.document.attending}} attending  </p>
                                 </div>
                             </div>
                         </div>
@@ -41,7 +41,7 @@
                         </div>
 
                     </div>
-                </div>
+                </a>
             </li>
         {% endfor %}
     </ul>

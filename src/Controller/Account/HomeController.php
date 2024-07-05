@@ -2,6 +2,7 @@
 
 namespace App\Controller\Account;
 
+use App\Entity\Event;
 use App\Service\EventService;
 use App\Service\TypeSenseService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -56,6 +57,14 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
             'eventCategories'=>$this->eventService->getEventCategories(),
             'events'=>$hits
+        ]);
+    }
+
+    #[Route('/event/{id}', name: 'app_user_event_show', methods: ['GET'])]
+    public function show(Event $event): Response
+    {
+        return $this->render('account/event/event-details.html.twig', [
+            'event' => $event,
         ]);
     }
 
