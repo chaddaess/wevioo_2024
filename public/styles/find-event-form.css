@@ -559,7 +559,6 @@ legend {
     margin-left: 8px;
     padding-left: 16px;
     border-left: 1px solid #008fa1;
-    background-image: url("../../icons/cross.svg");
     background-size: 8px;
     width: 8px;
     line-height: 1;
@@ -806,14 +805,16 @@ legend {
 }
 
 .s010 {
+    margin-left: -2em;
     min-height: 100vh;
     display: -ms-flexbox;
-    display: flex;
     -ms-flex-pack: center;
-    justify-content: center;
     -ms-flex-align: center;
     align-items: center;
-    padding: 15px;
+    width: 20%;
+    position: sticky;
+    align-self: flex-start;
+    padding: 0 1em;
 }
 
 .s010 form {
@@ -921,7 +922,6 @@ legend {
     border: 0;
     cursor: pointer;
     font-weight: 400;
-    margin-left:  -2em;
 }
 
 .s010 form .inner-form .input-field .btn-delete:hover, .s010 form .inner-form .input-field .btn-delete:focus {
@@ -968,6 +968,9 @@ legend {
     padding: 40px;
     box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .s010 form .inner-form .advance-search .desc {
@@ -980,8 +983,9 @@ legend {
 .s010 form .inner-form .advance-search .row {
     display: -ms-flexbox;
     display: flex;
+    flex-direction: column;
     -ms-flex-pack: justify;
-    justify-content: space-between;
+    justify-content:flex-start;
     -ms-flex-align: center;
     align-items: center;
     margin-bottom: 20px;
@@ -1023,18 +1027,19 @@ legend {
 }
 
 .s010 form .inner-form .advance-search .input-field {
-    width: calc((100% - 40px) / 3);
+    width: 100%
 }
 
 .s010 form .inner-form .advance-search .input-select {
     height: 40px;
     border-radius: 12px;
+    width: 100%;
 
 }
 select{
     border-radius: 10px;
-    width: 9em;
-    text-indent: 1em;
+    width:100%;
+    text-align: start;
 }
 
 .s010 form .inner-form .advance-search .choices__inner {
@@ -1139,6 +1144,12 @@ select{
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg fill='%23fff' xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3e%3cpath d='M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z'/%3e%3c/svg%3e");
 }
 
+.group-btn{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 @media screen and (max-width: 767px) {
     .s010 form .inner-form .basic-search .input-field input {
         padding: 10px 110px 10px 30px;
@@ -1154,10 +1165,6 @@ select{
     }
     .s010 form .inner-form .advance-search {
         padding: 40px 15px;
-    }
-    .s010 form .inner-form .advance-search .row {
-        display: block;
-        padding-left:6em;
     }
     .s010 form .inner-form .advance-search .input-field {
         width: 7em;
