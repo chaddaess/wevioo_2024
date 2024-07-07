@@ -22,7 +22,7 @@
     <ul class="cards">
         {% for event in events %}
             <li>
-                <a href="{{ path('app_user_event_show',{'id':event.document.id}) }}" class="card" title="edit event">
+                <a href="{{ path('app_user_event_show',{'id':event.document.id}) }}" class="card">
                     <img src="{{ asset('/uploads/' ~ event.document.picture) }}" class="card__image" alt="" />
                     <div class="card__overlay">
                         <div class="card__header">

@@ -1,5 +1,5 @@
 :root {
-    --surface-color: #fff;
+    --surface-color: #f5f3f3;
     --curve: 40;
 }
 
@@ -105,13 +105,13 @@ body {
 
 .card__status {
     font-size: .8em;
-    color: #D7BDCA;
+    color: #8f73ff;
 }
 
 .card__description {
     padding: 0 2em 2em;
     margin: 0;
-    color: #D7BDCA;
+    color:  #8f73ff;;
     font-family: "MockFlowFont";
     display: -webkit-box;
     -webkit-box-orient: vertical;

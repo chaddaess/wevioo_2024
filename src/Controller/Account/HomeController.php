@@ -113,6 +113,18 @@ class HomeController extends AbstractController
             'id'=>$event->getId()
         ]);
     }
+    #[Route('/myevents',name:'app_user_my_events')]
+    public function myEvents():Response
+    {
+        $email=$this->getUser()->getUserIdentifier();
+        $user=$this->entityManager->getRepository(User::class)->findOneBy(['email'=>$email]);
+        $interested=$user->getInterestedIn();
+        $going=$user->getGoingTo();
+        return $this->render('account/event/my-events.html.twig',[
+            'going'=>$going,
+            'interested'=>$interested,
+        ]);
+    }
 
     private function calculateDate(string $dateOption){
         $now =new \DateTime();
