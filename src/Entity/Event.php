@@ -23,13 +23,7 @@ class Event
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $location = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
     private ?string $category = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $organiser = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $picture = null;
@@ -54,6 +48,9 @@ class Event
      */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'goingTo')]
     private Collection $attendingUsers;
+
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    private ?array $location = null;
 
 
     public function __construct()
@@ -91,17 +88,7 @@ class Event
         return $this;
     }
 
-    public function getLocation(): ?string
-    {
-        return $this->location;
-    }
 
-    public function setLocation(?string $location): static
-    {
-        $this->location = $location;
-
-        return $this;
-    }
 
     public function getCategory(): ?string
     {
@@ -115,17 +102,8 @@ class Event
         return $this;
     }
 
-    public function getOrganiser(): ?string
-    {
-        return $this->organiser;
-    }
 
-    public function setOrganiser(?string $organiser): static
-    {
-        $this->organiser = $organiser;
 
-        return $this;
-    }
 
     public function getPicture(): ?string
     {
@@ -222,6 +200,18 @@ class Event
         if ($this->attendingUsers->removeElement($attendingUser)) {
             $attendingUser->removeGoingTo($this);
         }
+
+        return $this;
+    }
+
+    public function getLocation(): ?array
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?array $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }

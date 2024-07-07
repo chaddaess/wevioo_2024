@@ -25,7 +25,7 @@ class EventType extends AbstractType
             ->add('date', null, [
                 'widget' => 'single_text',
             ])
-            ->add('location')
+//            ->add('location')
             ->add('category',ChoiceType::class,[
                 'choices'=>$this->eventCategories
             ])
