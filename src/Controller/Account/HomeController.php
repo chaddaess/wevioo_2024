@@ -22,13 +22,6 @@ class HomeController extends AbstractController
 
     }
 
-
-    public function getCoordinates(string $location):array{
-        //TODO: implement this function after integrating google maps api
-        //dummy data for testing
-        $coordinates=[48.86093481609114, 2.33698396872901];
-        return $coordinates;
-    }
     #[IsGranted('ROLE_USER')]
     #[Route('/explore', name: 'app_home')]
     public function index(Request $request): Response
@@ -36,9 +29,10 @@ class HomeController extends AbstractController
         $hits=[];
         $filters=[];
         if ($request->isMethod('POST')) {
+//            dd($request->request->get('coordinates'));
             $keywords=$request->request->get('keywords')?$request->request->get('keywords'):"*";
             $category=$request->request->get('category')?$request->request->get('category'):null;
-            $location=$request->request->get('location')?$this->getCoordinates($request->request->get('location')):null;
+            $location=$request->request->get('coordinates')?json_decode($request->request->get('coordinates')):null;
             $date=$request->request->get('dates')?$this->calculateDate($request->request->get('dates')):null;
 
             if($category){

@@ -1172,4 +1172,15 @@ select{
     }
 }
 
+.location-input{
+    width: 100%;
+    padding: 1em;
+    height: 1em;
+    text-align: start;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    border: 1px solid black;
+    margin-top: 1em;
+}
+
 /*# sourceMappingURL=Searchs_010.css.map */

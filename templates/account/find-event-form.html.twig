@@ -1,3 +1,23 @@
+<style>
+  .suggestions {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    z-index: 1;
+    margin-top: 5px;
+    max-width: 500px;
+  }
+  .suggestion {
+    padding: 10px;
+    cursor: pointer;
+  }
+  .suggestion:hover {
+    background: #f0f0f0;
+  }
+</style>
+
 <div class="s010">
   <form method="post" action="{{ path('app_home') }}">
     <div class="inner-form">
@@ -35,14 +55,12 @@
               </select>
             </div>
           </div>
-          <div class="input-field">
-            <div class="input-select">
-              <select data-trigger="" name="location">
-                <option placeholder="" value="">Location</option>
-                <option>Location 1</option>
-                <option>Location 2</option>
-              </select>
-            </div>
+          <div class="location">
+              <label class="formbold-form-label" style="margin-bottom:0">Location</label>
+              <p style="color: #555555 ;font-size:0.7em">(within a radius of 5km)</p>
+              <input type="text" id="search-input"  class="location-input" name='location'  placeholder="Paris"/>
+              <input type="hidden" id="coordinates" name="coordinates"/>
+              <div id="suggestions" class="suggestions"></div>
           </div>
 
         </div>
@@ -57,3 +75,35 @@
     </div>
   </form>
 </div>
+
+<script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
+<script>
+  const { OpenStreetMapProvider } = window.GeoSearch;
+  const provider = new OpenStreetMapProvider();
+  const input = document.getElementById('search-input');
+  const coordinatesInput = document.getElementById('coordinates');
+  const suggestionsContainer = document.getElementById('suggestions');
+
+  input.addEventListener('input', async () => {
+    const query = input.value;
+    if (query.length < 3) {
+      suggestionsContainer.innerHTML = '';
+      return;
+    }
+
+    const results = await provider.search({ query });
+    suggestionsContainer.innerHTML = '';
+
+    results.forEach(result => {
+      const div = document.createElement('div');
+      div.className = 'suggestion';
+      div.innerHTML = result.label;
+      div.addEventListener('click', () => {
+        input.value = result.label;
+        coordinatesInput.value = JSON.stringify([result.y, result.x]);
+        suggestionsContainer.innerHTML = '';
+      });
+      suggestionsContainer.appendChild(div);
+    });
+  });
+</script>
