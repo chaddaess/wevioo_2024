@@ -42,7 +42,7 @@ class HomeController extends AbstractController
                 $filters['date']='<='.$date;
             }
             if($location){
-                $filters['location']='('.$location[0].','.$location[1].',5km)';
+                $filters['location']='('.$location[0].','.$location[1].',120km)';
             }
             $response=$this->typeSenseService->search('events',$keywords,$filters);
             $hits=$response;
