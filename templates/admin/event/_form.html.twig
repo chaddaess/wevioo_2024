@@ -1,25 +1,3 @@
-<style>
-    .suggestions {
-        border: 1px solid #ccc;
-        max-height: 150px;
-        overflow-y: auto;
-        position: absolute;
-        background: white;
-        z-index: 1;
-        margin-top: 5px;
-        max-width: 500px;
-    }
-    .suggestion {
-        padding: 10px;
-        cursor: pointer;
-    }
-    .suggestion:hover {
-        background: #f0f0f0;
-    }
-</style>
-
-
-
 {{ form_start(form) }}
     {{ form_label(form.name, null, {'label_attr': {'class': 'formbold-form-label'}}) }}
     {{ form_widget(form.name, {'attr': {'class': 'formbold-form-input'}}) }}
@@ -28,8 +6,8 @@
     {{ form_widget(form.category, {'attr': {'class': 'formbold-form-input'}}) }}
 
     <div class="location-input" style="width: 100%">
-        <label class="formbold-form-label">Location</label>
-        <input type="text" id="search-input" class="formbold-form-input" name='location' value="{{ event.address }}" />
+        <label class="formbold-form-label" >Location</label>
+        <input type="text" id="search-input" class="formbold-form-input" name='location' value="{{ event.address }}" required />
         {{ form_widget(form.coordinates, {'id': form.coordinates.vars.id }) }}
         {{ form_widget(form.address, {'id': form.address.vars.id }) }}
         <div id="suggestions" class="suggestions"></div>
@@ -37,6 +15,10 @@
 
     {{ form_label(form.date, null, {'label_attr': {'class': 'formbold-form-label'}}) }}
     {{ form_widget(form.date, {'attr': {'class': 'formbold-form-input'}}) }}
+    {{ form_label(form.ticketLink, null, {'label_attr': {'class': 'formbold-form-label'}}) }}
+    {{ form_widget(form.ticketLink, {'attr': {'class': 'formbold-form-input'}}) }}
+    {{ form_label(form.comments, null, {'label_attr': {'class': 'formbold-form-label'}}) }}
+    {{ form_widget(form.comments, {'attr': {'class': 'formbold-form-input'}}) }}
     <div style="display: flex;flex-direction: row;align-items:flex-start">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_1670_1531)">
@@ -50,7 +32,6 @@
         </svg>
         {{ form_row(form.picture, {'attr': {'class': 'file-input'}}) }}
         <span class="hidden-text" style="display:none">file uploaded ! </span>
-
     </div>
     <br>
     <button class="formbold-btn">Save</button>
@@ -65,22 +46,34 @@
     const addressInput = document.getElementById('{{ form.address.vars.id }}');
     const suggestionsContainer = document.getElementById('suggestions');
 
-    input.addEventListener('input', async () => {
-        const query = input.value;
+    //to execute a function func every time interval
+    function debounce(func, delay) {
+        let timeoutId;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                func.apply(context, args);
+            }, delay);
+        };
+    }
+
+    input.addEventListener('input', debounce(async () => {
+        const query = input.value.trim();
         const results = await provider.search({ query });
         suggestionsContainer.innerHTML = '';
-
         results.forEach(result => {
             const div = document.createElement('div');
             div.className = 'suggestion';
             div.innerHTML = result.label;
+            suggestionsContainer.appendChild(div);
             div.addEventListener('click', () => {
                 input.value = result.label;
                 coordinatesInput.value = JSON.stringify([result.y, result.x]);
                 addressInput.value = result.label;
                 suggestionsContainer.innerHTML = '';
             });
-            suggestionsContainer.appendChild(div);
         });
-    });
+    }, 300));
 </script>

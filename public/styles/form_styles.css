@@ -95,3 +95,24 @@ label[for="event_picture"] {
     cursor: pointer;
     margin-left: 1em;
 }
+.suggestions {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    z-index: 1;
+    margin-top: 5px;
+    max-width: 500px;
+}
+.suggestion {
+    padding: 10px;
+    cursor: pointer;
+}
+.suggestion:hover {
+    background: #f0f0f0;
+}
+
+textarea{
+    height: 15em;
+}
