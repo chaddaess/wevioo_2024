@@ -83,22 +83,31 @@
   const input = document.getElementById('search-input');
   const coordinatesInput = document.getElementById('coordinates');
   const suggestionsContainer = document.getElementById('suggestions');
+  function debounce(func, delay) {
+    let timeoutId;
+    return function() {
+      const context = this;
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        func.apply(context);
+      }, delay);
+    };
+  }
 
-  input.addEventListener('input', async () => {
-    const query = input.value;
+  input.addEventListener('input', debounce(async () => {
+    const query = input.value.trim();
     const results = await provider.search({ query });
     suggestionsContainer.innerHTML = '';
-
     results.forEach(result => {
       const div = document.createElement('div');
       div.className = 'suggestion';
       div.innerHTML = result.label;
+      suggestionsContainer.appendChild(div);
       div.addEventListener('click', () => {
         input.value = result.label;
         coordinatesInput.value = JSON.stringify([result.y, result.x]);
         suggestionsContainer.innerHTML = '';
       });
-      suggestionsContainer.appendChild(div);
     });
-  });
+  }, 300));
 </script>

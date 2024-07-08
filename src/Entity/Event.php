@@ -59,6 +59,8 @@ class Event
     public function __construct()
     {
         $this->attendingUsers = new ArrayCollection();
+        $this->attending=0;
+        $this->interested=0;
     }
 
     #[ORM\Column(nullable: true)]

@@ -28,17 +28,24 @@ class SetTypeSenseEventSchema extends Command
         $eventSchema=[
             'name'=>'events',
             'fields'=>[
+                ['name'=>'id','type'=>'int32'],
                 ['name'=>'name','type'=>'string'],
                 ['name'=>'date','type'=>'int64'],
-                [
-                    'name'  => 'location',
-                    'type'  => 'geopoint'
-                ],
                 ['name'=>'category','type'=>'string'],
                 ['name'=>'picture','type'=>'string'],
                 ['name'=>'creator','type'=>'string'],
                 ['name'=>'interested','type'=>'int32'],
                 ['name'=>'attending','type'=>'int32'],
+                ['name'=>'ticketLink','type'=>'string'],
+                ['name'=>'comments','type'=>'string'],
+                [
+                    'name'  => 'location',
+                    'type'  => 'geopoint'
+                ],
+                ['name'=>'address','type'=>'string'],
+
+
+
                 [
                     'name'=>'embedding',
                     'type'=>'float[]',

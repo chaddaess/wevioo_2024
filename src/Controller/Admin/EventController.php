@@ -5,7 +5,9 @@ namespace App\Controller\Admin;
 use App\Entity\Event;
 use App\Form\EventType;
 use App\Repository\EventRepository;
+use App\Service\TypeSenseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Http\Client\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -14,12 +16,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Typesense\Exceptions\TypesenseClientError;
 
 
 #[IsGranted('ROLE_ADMIN')]
 #[Route('/admin/event')]
 class EventController extends AbstractController
 {
+    public  function  __construct( private readonly TypeSenseService $typeSenseService){
+
+    }
     #[Route('/', name: 'app_event_index', methods: ['GET'])]
     public function index(EventRepository $eventRepository): Response
     {
@@ -78,7 +84,7 @@ class EventController extends AbstractController
             $event->setLocation($coordinates);
             $this->saveEventPicture($form, $slugger, $event,"edit");
             $entityManager->flush();
-
+            $this->addFlash('success',"event edited successfully");
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -91,6 +97,14 @@ class EventController extends AbstractController
     #[Route('/{id}', name: 'app_event_delete', methods: ['POST'])]
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
+        //delete event from typeSense collection to keep integrity
+        $client = $this->typeSenseService->getClient();
+        try {
+            $client->collections['events']->documents[$event->getId()]->delete();
+        } catch (Exception|TypesenseClientError $e) {
+            $this->addFlash('error','error deleting event');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($event);
             $entityManager->flush();

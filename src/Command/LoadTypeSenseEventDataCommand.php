@@ -2,7 +2,9 @@
 
 namespace App\Command;
 
+use App\Entity\Event;
 use App\Service\TypeSenseService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class LoadTypeSenseEventDataCommand extends Command
 {
-    public function __construct(private TypeSenseService $typeSenseService)
+    public function __construct(private TypeSenseService $typeSenseService,private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
@@ -24,10 +26,31 @@ class LoadTypeSenseEventDataCommand extends Command
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int{
+        $events=$this->entityManager->getRepository(Event::class)->findAll();
+        $documents=[];
+        foreach ($events as $event){
+            $documents[]=[
+                'id'=>(string)$event->getId(),
+                'name'=>$event->getName(),
+                'date'=>$event->getDate()->getTimeStamp(),
+                'category'=>$event->getCategory(),
+                'picture'=>$event->getPicture(),
+                'creator'=>$event->getCreator(),
+                'attending'=>(int)$event->getAttending(),
+                'interested'=>(int)$event->getInterested(),
+                'ticketLink'=>$event->getTicketLink(),
+                'comments'=>$event->getComments(),
+                'location'=>$event->getLocation(),
+                'address'=>$event->getAddress(),
+
+
+
+            ];
+        }
         $client=$this->typeSenseService->getClient();
-        $eventsData = file_get_contents('public/data/events.jsonl');
         try{
-            $client->collections['events']->documents->import($eventsData);
+            $output->writeln("Number of documents to import: " . count($documents));
+            $client->collections['events']->documents->import($documents,['action' => 'upsert']);
             $output->writeln("data loaded successfully");
         }catch (\Exception $e){
             $output->writeln("error loading data");
