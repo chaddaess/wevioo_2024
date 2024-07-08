@@ -67,11 +67,6 @@
 
     input.addEventListener('input', async () => {
         const query = input.value;
-        if (query.length < 3) {
-            suggestionsContainer.innerHTML = '';
-            return;
-        }
-
         const results = await provider.search({ query });
         suggestionsContainer.innerHTML = '';
 
