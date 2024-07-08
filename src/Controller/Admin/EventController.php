@@ -73,6 +73,9 @@ class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $coordinatesJson = $form->get('coordinates')->getData();
+            $coordinates = json_decode($coordinatesJson, true);
+            $event->setLocation($coordinates);
             $this->saveEventPicture($form, $slugger, $event,"edit");
             $entityManager->flush();
 

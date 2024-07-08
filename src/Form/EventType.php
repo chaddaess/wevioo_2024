@@ -4,10 +4,12 @@ namespace App\Form;
 
 use App\Entity\Event;
 use App\Service\EventService;
+use Doctrine\DBAL\Types\TextType;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -25,7 +27,11 @@ class EventType extends AbstractType
             ->add('date', null, [
                 'widget' => 'single_text',
             ])
-//            ->add('location')
+            ->add('coordinates', HiddenType::class,[
+                'mapped'=>false,
+            ])
+            ->add('address', HiddenType::class,[
+            ])
             ->add('category',ChoiceType::class,[
                 'choices'=>$this->eventCategories
             ])

@@ -52,6 +52,9 @@ class Event
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private ?array $location = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
+
 
     public function __construct()
     {
@@ -212,6 +215,18 @@ class Event
     public function setLocation(?array $location): static
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }

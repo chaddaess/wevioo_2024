@@ -315,6 +315,13 @@
             "./config/packages/messenger.yaml"
         ]
     },
+        "files": [
+            "./assets/app.js",
+            "./assets/styles/app.css",
+            "./config/packages/webpack_encore.yaml",
+            "./package.json",
+        ]
+    },
     "symfonycasts/verify-email-bundle": {
         "version": "v1.17.0"
     },
