@@ -4,80 +4,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
+    <link  rel="stylesheet" href="{{ asset('styles/event-details.css') }}"/>
 {% endblock %}
 {% block body %}
-
-    <style>
-        .main-container{
-            display: flex;
-            flex-direction: column;
-        }
-        .row{
-            display: flex;
-            flex-direction: column;
-            background-color: white;
-            padding-bottom:2em;
-        }
-        .event-picture{
-            align-self: center;
-            width: 70%;
-            border-radius: 20px;
-            margin-bottom: 1em;
-        }
-        .date{
-            color: #e80707;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5em;
-
-        }
-        .name{
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 0.5em;
-        }
-        .creator{
-            color: #555555;
-            font-size: 0.8rem;
-            margin-bottom: 1em;
-        }
-        hr{
-            width: 70%;
-            align-self: center;
-        }
-        .interact-button{
-            background-color: #d0d0d0;
-            border: 1px solid transparent;
-            border-radius: 12px;
-            width: 10em;
-            padding: 0.5em 1em;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin-right: 2em;
-            cursor: pointer;
-        }
-        .buttons{
-            display:flex;
-            flex-direction: row;
-            align-items: center;
-            align-self: center;
-            margin-top: 1em;
-            margin-left: 50%;
-        }
-
-        .row.small {
-            margin-top: 2em;
-            border-radius: 20px;
-            width: 40%;
-            align-self: center;
-            padding: 2em;
-        }
-
-        #map {
-            height:35em;
-        }
-    </style>
     {% set tickSVG=
         '<svg height="25" width="25" style="margin-left:1em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title></title> <g id="Complete"> <g id="tick"> <polyline fill="none" points="3.7 14.3 9.6 19 20.3 5" stroke="#5a00e0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline> </g> </g> </g></svg>'
     %}
@@ -153,27 +82,11 @@
             {% endif %}
 
         </div>
-
         <div class="row small">
             <p style="font-weight: bold;margin-bottom: 1.5em">Location</p>
-            <div id="map"></div>
-
-
+            <iframe class="custom-shadow" id="map-canvas" width="100%" height="555" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+                    src="https://maps.google.com/maps?q={{ locationArray[0] }},{{ locationArray[1] }}&z=14&output=embed"></iframe>
         </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin="">
-    </script>
-    <script>
-        let map = L.map('map').setView({{ event.location|json_encode }}, 13);
-        let marker = L.marker({{ event.location|json_encode  }}).addTo(map);
-
-        L.tileLayer('http://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}',{
-            maxZoom: 20,
-            subdomains:['mt0','mt1','mt2','mt3']
-        }).addTo(map);
-
-    </script>
 {% endblock %}

@@ -68,6 +68,7 @@ class HomeController extends AbstractController
             'event' => $event,
             'isInterested' => $isInterested,
             'isAttending' => $isAttending,
+            'locationArray'=>$event->getLocation(),
         ]);
     }
     #[Route('/event/{id}/interested', name: 'app_user_event_toggle_interested', methods: ['GET'])]
