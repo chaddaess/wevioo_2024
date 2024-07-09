@@ -1,7 +1,7 @@
 {% if is_granted('ROLE_ADMIN') %}
-    {% set template='base.html.twig' %}
+    {% set template='shared/base_admin.html.twig' %}
 {% else %}
-    {% set template='base_user.html.twig' %}
+    {% set template='shared/base_user.html.twig' %}
 {% endif %}
 {% extends template %}
 {% block title %}event{% endblock %}
