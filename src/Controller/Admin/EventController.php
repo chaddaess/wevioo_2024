@@ -62,7 +62,7 @@ class EventController extends AbstractController
     #[Route('/{id}', name: 'app_event_show', methods: ['GET'])]
     public function show(Event $event): Response
     {
-        return $this->render('admin/event/show.html.twig', [
+        return $this->render('account/event/event-details.html.twig', [
             'event' => $event,
         ]);
     }
@@ -80,7 +80,7 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $coordinatesJson = $form->get('coordinates')->getData();
-            $coordinates = json_decode($coordinatesJson, true);
+            $coordinates = json_decode($coordinatesJson, true)??$event->getLocation();
             $event->setLocation($coordinates);
             $this->saveEventPicture($form, $slugger, $event,"edit");
             $entityManager->flush();
