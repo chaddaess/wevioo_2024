@@ -26,6 +26,9 @@
 }
 .text{
     width: 70%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
 }
 .name{
     font-size: 1.5rem;
@@ -35,7 +38,7 @@
 .creator{
     color: #555555;
     font-size: 0.8rem;
-    margin-bottom: 1em;
+    margin: 1.5em 1%;
 }
 hr{
     width: 70%;
