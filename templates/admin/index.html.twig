@@ -8,5 +8,60 @@
             {{ message }}
         </div>
     {% endfor %}
-<div>welcome admin :p </div>
+    <style>
+        .main-box{
+            display: flex;
+            /*border: 1px solid cyan;*/
+            width: 80%;
+            padding: 4em;
+            align-self: center;
+            border-radius: 12px;
+        }
+        .box:first-child{
+            margin-right: 2em;
+        }
+        .box{
+            /*border: 1px solid magenta;*/
+            /*height: 10em;*/
+            width: 50%;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+
+
+        }
+        .text{
+            font-size: 1.3rem;
+            font-weight: bold;
+
+        }
+        img{
+            width: 60%;
+            height: 70%;
+            border-radius: 12px;
+
+        }
+        a{
+            color: black;
+        }
+        .box:hover {
+            box-shadow: 0 0 8px 2px #7857ff; /* Glowy blue box-shadow on hover */
+        }
+    </style>
+    <div class="container">
+        <h1>Welcome, <span style="color: #4723D9">{{ admin }}</span> !</h1>
+        <div class="main-box">
+            <a href="{{ path('app_event_new') }}" class="box">
+                <img src="{{ asset('images/plan.avif') }}" style="">
+                <div class="text">New Event</div>
+            </a>
+
+            <a href="{{ path('app_event_index') }}" class="box">
+                <img src="{{ asset('images/events.avif') }}" style="height: 100%">
+                <div class="text">My events</div>
+            </a>
+        </div>
+    </div>
+
 {% endblock %}
