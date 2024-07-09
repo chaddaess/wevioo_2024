@@ -65,7 +65,7 @@ class HomeController extends AbstractController
         $user=$this->entityManager->getRepository(User::class)->findOneBy(['email'=>$email]);
         $isInterested = $user->getInterestedIn()->contains($event);
         $isAttending = $user->getGoingTo()->contains($event);
-        return $this->render('account/event/event-details.html.twig', [
+        return $this->render('shared/event/event-details.html.twig', [
             'event' => $event,
             'isInterested' => $isInterested,
             'isAttending' => $isAttending,
