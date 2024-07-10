@@ -43,7 +43,6 @@
         "symfony/ux-turbo": "^2.18",
         "symfony/validator": "7.1.*",
         "symfony/web-link": "7.1.*",
-        "symfony/webpack-encore-bundle": "*",
         "symfony/yaml": "7.1.*",
         "symfonycasts/verify-email-bundle": "^1.17",
         "twig/extra-bundle": "^2.12|^3.0",
@@ -108,6 +107,7 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "7.1.*",
-        "symfony/web-profiler-bundle": "7.1.*"
+        "symfony/web-profiler-bundle": "7.1.*",
+      "ext-http": "*"
     }
 }
