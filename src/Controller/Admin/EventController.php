@@ -17,6 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Typesense\Exceptions\TypesenseClientError;
+use function PHPUnit\Framework\throwException;
 
 
 #[IsGranted('ROLE_ADMIN')]
@@ -62,6 +63,11 @@ class EventController extends AbstractController
     #[Route('/{id}', name: 'app_event_show', methods: ['GET'])]
     public function show(Event $event): Response
     {
+        $user=$this->getUser()->getUserIdentifier();
+        if($user!=$event->getCreator()){
+            $this->addFlash('error',"you're not authorized to edit this event");
+            return $this->redirectToRoute('app_admin_home');
+        }
         return $this->render('shared/event/event-details.html.twig', [
             'event' => $event,
         ]);

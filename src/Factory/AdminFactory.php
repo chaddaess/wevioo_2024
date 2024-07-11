@@ -16,7 +16,7 @@ class AdminFactory
         $hashedPassword=$this->passwordHasher->hashPassword($admin,$password);
         $admin->setUsername($username);
         $admin->setPassword($hashedPassword);
-        $admin->setRoles(['ROLE_ADMIN','ROLE_USER']);
+        $admin->setRoles(['ROLE_USER','ROLE_ADMIN']);
         return $admin;
     }
 

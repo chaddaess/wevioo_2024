@@ -22,6 +22,6 @@ class AdminFactoryTest extends TestCase
         $this->assertInstanceOf(AdminUser::class,$admin);
         $this->assertSame($username,$admin->getUsername());
         $this->assertSame('brika',$admin->getPassword());
-        $this->assertSame(['ROLE_ADMIN','ROLE_USER'],$admin->getRoles());
+        $this->assertSame(['ROLE_USER','ROLE_ADMIN'],$admin->getRoles());
     }
 }

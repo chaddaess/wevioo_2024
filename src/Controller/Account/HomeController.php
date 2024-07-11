@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 
+#[IsGranted('ROLE_USER')]
 class HomeController extends AbstractController
 {
 
@@ -22,7 +23,6 @@ class HomeController extends AbstractController
 
     }
 
-    #[IsGranted('ROLE_USER')]
     #[Route('/explore', name: 'app_home')]
     public function index(Request $request): Response
     {
@@ -39,8 +39,7 @@ class HomeController extends AbstractController
                 $filters['category']=$category;
             }
             if($date){
-                $filters['date']='<='.$date;
-                $filters['date']='>='.(new \DateTime())->getTimestamp();
+                $filters['date']='<='.$date.'&& date >='.(new \DateTime())->getTimestamp();
             }
             if($location){
                 $filters['location']='('.$location[0].','.$location[1].',120km)';
