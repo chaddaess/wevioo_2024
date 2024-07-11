@@ -19,7 +19,7 @@ class LoadTypeSenseEventDataCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure():void
     {
         $this
             ->setDescription('Loads data to the events collection');

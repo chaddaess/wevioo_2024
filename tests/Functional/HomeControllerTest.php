@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functional;
 
+use App\Entity\Event;
 use App\Entity\User;
 use App\Factory\AdminFactory;
 use App\Factory\EventFactory;
@@ -23,11 +24,11 @@ class HomeControllerTest extends WebTestCase
     {
         parent::setUp();
         $this->client = static::createClient();
+        $this->client->disableReboot();
         $this->userFactory = $this->client->getContainer()->get(UserFactory::class);
         $this->eventFactory=$this->client->getContainer()->get(EventFactory::class);
         $this->em = $this->client->getContainer()->get(EntityManagerInterface::class);
     }
-
 
     public function test_show_event_authenticated_user_successful()
     {
@@ -36,13 +37,13 @@ class HomeControllerTest extends WebTestCase
         $this->em->persist($user);
         $this->em->persist($event);
         $this->em->flush();
-
         $this->client->loginUser($user);
         $crawler=$this->client->request('GET', '/event/'.$event->getId());
         $this->assertResponseIsSuccessful();
         $this->assertRouteSame('app_user_event_show');
         $this->assertTrue($crawler->filter('html:contains("<p class="text name">test-event</p>")')->count() > 0);
     }
+
 
     protected function tearDown(): void
     {

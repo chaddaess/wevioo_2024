@@ -73,6 +73,7 @@
                             <div style="display: flex;flex-direction: row;align-items: center">
                                 <span>Interested</span>
                                 {% if isInterested %}
+                                    <div class="test-tick-icon" style="display: none">test</div>
                                     {{ tickSVG|raw }}
                                 {% else %}
                                     {{ interestedSVG|raw }}

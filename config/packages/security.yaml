@@ -18,6 +18,7 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+            stateless: false
         admin:
             pattern: ^/admin
             lazy: true
@@ -30,6 +31,7 @@ security:
             logout:
                 path: app_admin_logout
                 target: app_admin_login
+            stateless: false
 
         main:
             lazy: true
@@ -42,6 +44,7 @@ security:
             logout:
                 path: app_logout
                 target: app_login
+            stateless: false
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
