@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Factory;
+namespace App\Tests\Unit\Factory;
 
 use App\Entity\AdminUser;
 use App\Factory\AdminFactory;

@@ -3,10 +3,10 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">
-            {{ message }}
-        </div>
+    {% for type,messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash {{ type }}">{{ message }}</div>
+        {% endfor %}
     {% endfor %}
     <style>
         .main-box{
