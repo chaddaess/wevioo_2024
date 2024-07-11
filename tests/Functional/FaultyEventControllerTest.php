@@ -1,9 +1,6 @@
 <?php
 
 namespace App\Tests\Functional;
-use App\Entity\AdminUser;
-use App\Entity\Event;
-use App\Entity\User;
 use App\Factory\AdminFactory;
 use App\Factory\EventFactory;
 use App\Factory\UserFactory;
@@ -69,24 +66,13 @@ class FaultyEventControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
+        $connection = $this->entityManager->getConnection();
+        $connection->executeQuery('DELETE FROM event WHERE name = "test-event"');
+        $connection->executeQuery('DELETE FROM admin_user WHERE username = "test-admin"');
+        $connection->executeQuery('DELETE FROM user WHERE email = "nonadmin@example.com"');
+        $this->entityManager->close();
+        $this->entityManager = null;
 
         parent::tearDown();
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'nonadmin@example.com']);
-        $admin=$this->entityManager->getRepository(AdminUser::class)->findOneBy(['username' => 'test-admin']);
-        $event=$this->entityManager->getRepository(Event::class)->findOneBy(['name'=>'test-event']);
-        if ($user) {
-            $this->entityManager->remove($user);
-            $this->entityManager->flush();
-        }
-        if($admin){
-            $this->entityManager->remove($admin);
-            $this->entityManager->flush();
-        }
-        if($event){
-            $this->entityManager->remove($adm);
-            $this->entityManager->flush();
-        }
-        $this->entityManager->clear();
-
     }
 }
