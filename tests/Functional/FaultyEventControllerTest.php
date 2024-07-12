@@ -11,11 +11,7 @@ use Http\Client\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Typesense\Exceptions\TypesenseClientError;
-use function Symfony\Component\Translation\t;
-
 class FaultyEventControllerTest extends WebTestCase
 {
     private ?UserFactory $userFactory;
