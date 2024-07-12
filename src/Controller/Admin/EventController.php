@@ -114,6 +114,7 @@ class EventController extends AbstractController
             $client->collections['events']->documents[$event->getId()]->delete();
         } catch (Exception|TypesenseClientError $e) {
             $this->addFlash('error','error deleting event');
+            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
         if ($this->getParameter('kernel.environment') === 'test') {
             // bypass csrf tests
@@ -127,6 +128,7 @@ class EventController extends AbstractController
             $entityManager->flush();
         }
 
+        $this->addFlash('success','event deleted successfully');
         return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
     }
 
