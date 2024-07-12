@@ -84,7 +84,7 @@ class FaultyEventControllerTest extends WebTestCase
         $this->assertNotNull($event,'event should be saved in the database');
     }
 
-    public function test_admin_cant_submit_a_non_valid_file(){
+    public function test_admin_cant_submit_an_invalid_file(){
         $admin=$this->adminFactory->createAdmin('test-admin','password');
         $this->entityManager->persist($admin);
         $this->entityManager->flush();
