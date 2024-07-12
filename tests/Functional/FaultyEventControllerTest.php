@@ -91,6 +91,7 @@ class FaultyEventControllerTest extends WebTestCase
         $this->assertFileExists('public/uploads/'.$event->getPicture());
         //delete the picture
         unlink('public/uploads/'.$event->getPicture());
+        //TODO: delete event from typesense cloud
     }
 
     public function test_admin_cant_submit_an_invalid_file(){

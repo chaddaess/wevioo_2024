@@ -56,7 +56,6 @@ class LoadTypeSenseEventDataCommand extends Command
             $output->writeln("error loading data");
             $output->writeln($e->getMessage());
             return Command::FAILURE;
-
         }
         return Command::SUCCESS;
 

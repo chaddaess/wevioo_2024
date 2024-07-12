@@ -9,6 +9,7 @@ use App\Service\TypeSenseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Http\Client\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +38,7 @@ class EventController extends AbstractController
     }
 
     #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,SluggerInterface $slugger,TypeSenseService $typeSenseService): Response
     {
         $user=$this->getUser()->getUserIdentifier();
         $event = new Event();
@@ -45,11 +46,33 @@ class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            //TODO: run load data command to register event in typesense cloud
             $event->setCreator($user);
             $this->saveEventPicture($form, $slugger, $event,"new");
             $entityManager->persist($event);
-            $entityManager->flush();
+            $client=$typeSenseService->getClient();
+            $document=[
+                'id'=>(string)$event->getId(),
+                'name'=>$event->getName(),
+                'date'=>$event->getDate()->getTimeStamp(),
+                'category'=>$event->getCategory(),
+                'picture'=>$event->getPicture(),
+                'creator'=>$event->getCreator(),
+                'attending'=>(int)$event->getAttending(),
+                'interested'=>(int)$event->getInterested(),
+                'ticketLink'=>$event->getTicketLink(),
+                'comments'=>$event->getComments(),
+                'location'=>$event->getLocation(),
+                'address'=>$event->getAddress(),
+            ];
+            try{
+                $client->collections['events']->documents->create($document);
+                $entityManager->flush();
+                $this->addFlash("success",'event created successfully');
+            }catch (\Exception $e){
+                $this->addFlash('error','error creating event , please try again');
+                dd($e->getMessage());
+            }
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
