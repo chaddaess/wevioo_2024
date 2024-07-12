@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Tests\Functional;
+use App\Entity\Event;
 use App\Factory\AdminFactory;
 use App\Factory\EventFactory;
 use App\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 
 class FaultyEventControllerTest extends WebTestCase
 {
@@ -48,16 +50,37 @@ class FaultyEventControllerTest extends WebTestCase
 
     }
     public function  test_admin_cant_show_another_admins_event(){
-        $this->client->disableReboot();
         $admin=$this->adminFactory->createAdmin('test-admin','password');
         $event=$this->eventFactory->createEvent();
         $this->entityManager->persist($event);
         $this->entityManager->persist($admin);
         $this->entityManager->flush();
         $this->client->loginUser($admin,'admin');
+        $this->client->followRedirects();
         $crawler=$this->client->request('GET','/admin/event/'.$event->getId());
-        $crawler=$this->client->followRedirect();
         $this->assertTrue($crawler->filter('html:contains("<div class="flash error">\nyou&#039;re not authorized to edit this event\n</div>\n")')->count() > 0);
+    }
+
+    public function test_admin_can_create_a_valid_event(){
+        $admin=$this->adminFactory->createAdmin('test-admin','password');
+        $this->entityManager->persist($admin);
+        $this->entityManager->flush();
+        $this->client->loginUser($admin,'admin');
+        $this->client->followRedirects();
+        $crawler=$this->client->request('GET','/admin/event/new');
+        $crawler = new Crawler(html_entity_decode($crawler->html()),'http://127.0.0.1:8000/admin/event/new');
+        $form = $crawler->selectButton('Save')->form();
+        $form['event[name]'] = 'test-event';
+        $form['event[category]'] = 'Education';
+        $form['event[date]'] = '2024-07-12T12:00';
+        $form['event[comments]'] = 'This is a test event.';
+        $form['event[picture]'] = 'no-image.png';
+        $form['event[coordinates]'] = json_encode([12, 34]); // Ensure correct format
+        $form['event[address]'] = 'test-address';
+        $crawler = $this->client->submit($form);
+        $this->assertResponseIsSuccessful();
+        $event=$this->entityManager->getRepository(Event::class)->findOneBy(['name'=>'test-event']);
+        $this->assertNotNull($event,'event should be saved in the database');
     }
 
 
