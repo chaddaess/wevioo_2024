@@ -57,7 +57,9 @@ class EventType extends AbstractType
 
             ])
         ->add('ticketLink')
-        ->add('comments',TextareaType::class);
+        ->add('comments',TextareaType::class,[
+            'required'=>false
+        ]);
 
     }
 

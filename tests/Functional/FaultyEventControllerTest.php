@@ -83,6 +83,29 @@ class FaultyEventControllerTest extends WebTestCase
         $this->assertNotNull($event,'event should be saved in the database');
     }
 
+    public function test_admin_cant_submit_a_non_valid_file(){
+        $admin=$this->adminFactory->createAdmin('test-admin','password');
+        $this->entityManager->persist($admin);
+        $this->entityManager->flush();
+        $this->client->loginUser($admin,'admin');
+        $this->client->followRedirects();
+        $crawler=$this->client->request('GET','/admin/event/new');
+        $crawler = new Crawler(html_entity_decode($crawler->html()),'http://127.0.0.1:8000/admin/event/new');
+        $form = $crawler->selectButton('Save')->form();
+        $form['event[name]'] = 'test-event';
+        $form['event[category]'] = 'Education';
+        $form['event[date]'] = '2024-07-12T12:00';
+        $form['event[comments]'] = 'This is a test event.';
+        $form['event[picture]'] = 'no-image.png';
+        $form['event[coordinates]'] = json_encode([12, 34]); // Ensure correct format
+        $form['event[address]'] = 'test-address';
+        $crawler = $this->client->submit($form);
+        $this->assertResponseIsSuccessful();
+        $event=$this->entityManager->getRepository(Event::class)->findOneBy(['name'=>'test-event']);
+        $this->assertNotNull($event,'event should be saved in the database');
+    }
+
+
 
 
 

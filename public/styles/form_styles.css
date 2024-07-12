@@ -116,3 +116,9 @@ label[for="event_picture"] {
 textarea{
     height: 15em;
 }
+ul{
+    list-style: none;
+}
+ul>li{
+    color: darkred;
+}
