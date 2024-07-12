@@ -9,7 +9,6 @@ use App\Service\TypeSenseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Http\Client\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +17,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Typesense\Exceptions\TypesenseClientError;
-use function PHPUnit\Framework\throwException;
 
 
 #[IsGranted('ROLE_ADMIN')]
@@ -46,32 +44,21 @@ class EventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //TODO: run load data command to register event in typesense cloud
             $event->setCreator($user);
+            $coordinatesJson = $request->request->get('coordinates');
+            $coordinates = json_decode($coordinatesJson, true);
+            $event->setLocation($coordinates);
             $this->saveEventPicture($form, $slugger, $event,"new");
-            $entityManager->persist($event);
-            $client=$typeSenseService->getClient();
-            $document=[
-                'id'=>(string)$event->getId(),
-                'name'=>$event->getName(),
-                'date'=>$event->getDate()->getTimeStamp(),
-                'category'=>$event->getCategory(),
-                'picture'=>$event->getPicture(),
-                'creator'=>$event->getCreator(),
-                'attending'=>(int)$event->getAttending(),
-                'interested'=>(int)$event->getInterested(),
-                'ticketLink'=>$event->getTicketLink(),
-                'comments'=>$event->getComments(),
-                'location'=>$event->getLocation(),
-                'address'=>$event->getAddress(),
-            ];
+            $entityManager->beginTransaction();
             try{
-                $client->collections['events']->documents->create($document);
+                $entityManager->persist($event);
                 $entityManager->flush();
+                $this->typeSenseService->loadDocument($event);
                 $this->addFlash("success",'event created successfully');
+                $entityManager->commit();
             }catch (\Exception $e){
+                $entityManager->rollback();
                 $this->addFlash('error','error creating event , please try again');
-                dd($e->getMessage());
             }
 
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
@@ -104,16 +91,25 @@ class EventController extends AbstractController
             $this->addFlash('error',"you're not authorized to edit this event");
             return $this->redirectToRoute('app_admin_home');
         }
+
         $form = $this->createForm(EventType::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $coordinatesJson = $form->get('coordinates')->getData();
-            $coordinates = json_decode($coordinatesJson, true)??$event->getLocation();
+            $coordinatesJson = $request->request->get('coordinates');
+            $coordinates = json_decode($coordinatesJson, true);
             $event->setLocation($coordinates);
             $this->saveEventPicture($form, $slugger, $event,"edit");
-            $entityManager->flush();
-            $this->addFlash('success',"event edited successfully");
+            $entityManager->beginTransaction();
+            try{
+                $this->typeSenseService->loadDocument($event);
+                $entityManager->flush();
+                $entityManager->commit();
+                $this->addFlash('success',"event edited successfully");
+            }catch (\Exception $e){
+                $entityManager->rollback();
+                $this->addFlash('error','error editing event , please try again');
+            }
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
         }
 

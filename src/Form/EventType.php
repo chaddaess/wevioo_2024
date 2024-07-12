@@ -29,11 +29,8 @@ class EventType extends AbstractType
                 'required'=>'true'
             ])
             ->add('date', null, [
+                'required'=>'true',
                 'widget' => 'single_text',
-            ])
-            ->add('coordinates', HiddenType::class,[
-                'mapped'=>false,
-                'required'=>true,
             ])
             ->add('address', HiddenType::class,[
                 'required'=>'true'

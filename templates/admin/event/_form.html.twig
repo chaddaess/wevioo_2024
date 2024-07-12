@@ -8,8 +8,8 @@
     <div class="location-input" style="width: 100%">
         <label class="formbold-form-label" >Location</label>
         <input type="text" id="search-input" class="formbold-form-input" name='location' value="{{ event.address }}" required />
-        {{ form_widget(form.coordinates, {'id': form.coordinates.vars.id }) }}
         {{ form_widget(form.address, {'id': form.address.vars.id }) }}
+        <input type="hidden" id="coordinates" name="coordinates" value="{{ event.location|json_encode }}"/>
         <div id="suggestions" class="suggestions"></div>
     </div>
 
@@ -34,7 +34,7 @@
         <span class="hidden-text" style="display:none">file uploaded ! </span>
     </div>
     <br>
-    <button class="formbold-btn" value="save">Save</button>
+    <button class="formbold-btn">Save</button>
 {{ form_end(form) }}
 
 <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
@@ -42,7 +42,7 @@
     const { OpenStreetMapProvider } = window.GeoSearch;
     const provider = new OpenStreetMapProvider();
     const input = document.getElementById('search-input');
-    const coordinatesInput = document.getElementById('{{ form.coordinates.vars.id }}');
+    const coordinatesInput = document.getElementById('coordinates');
     const addressInput = document.getElementById('{{ form.address.vars.id }}');
     const suggestionsContainer = document.getElementById('suggestions');
 
@@ -74,5 +74,11 @@
                 suggestionsContainer.innerHTML = '';
             });
         });
-    }, 300));
+    },300));
+    document.querySelector('form').addEventListener('submit', async function (event) {
+        if (!coordinatesInput.value || !addressInput.value) {
+            event.preventDefault();
+            alert('Make sure to select a location.If you already did ,please try  submitting again in a few seconds');
+        }
+    });
 </script>

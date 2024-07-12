@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Event;
 use Typesense\Client;
 
 class TypeSenseService
@@ -49,6 +50,26 @@ class TypeSenseService
         ];
         $response=$this->client->collections[$collectionName]->documents->search($searchParameters);
         return $response['hits'];
+    }
+
+    public function loadDocument(Event $event): void
+    {
+        $document=[
+            'id'=>(string)$event->getId(),
+            'name'=>$event->getName(),
+            'date'=>$event->getDate()->getTimeStamp(),
+            'category'=>$event->getCategory()??'Entertainment',
+            'picture'=>$event->getPicture()??'no-image.png',
+            'creator'=>$event->getCreator()??'uknown',
+            'attending'=>(int)$event->getAttending()??0,
+            'interested'=>(int)$event->getInterested()??0,
+            'ticketLink'=>$event->getTicketLink()??'',
+            'comments'=>$event->getComments()??'',
+            'location'=>$event->getLocation(),
+            'address'=>$event->getAddress(),
+        ];
+        $this->client->collections['events']->documents->upsert($document);
+
     }
 
 }
