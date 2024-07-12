@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use function Symfony\Component\Translation\t;
 
 class FaultyEventControllerTest extends WebTestCase
 {
@@ -109,6 +110,19 @@ class FaultyEventControllerTest extends WebTestCase
         $this->assertTrue($crawler->filter('html:contains("<li>Please upload a valid image</li>")')->count() > 0);
         $event=$this->entityManager->getRepository(Event::class)->findOneBy(['name'=>'test-event']);
         $this->assertTrue(!$event);
+    }
+
+    public function test_cant_delete_another_admins_event(){
+        $admin=$this->adminFactory->createAdmin('test-admin','password');
+        $this->entityManager->persist($admin);
+        $event=$this->eventFactory->createEvent();// event.creator!=test-admin
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+        $this->client->loginUser($admin,'admin');
+        $this->client->followRedirects();
+        $crawler=$this->client->request('GET','admin/event/'.$event->getId().'/delete');
+        $this->assertTrue($crawler->filter('html:contains("<div class="flash error">\nyou&#039;re not authorized to delete this event\n</div>")')->count() > 0);
+        $this->assertNotNull($this->entityManager->getRepository(Event::class)->findOneBy(['name'=>'test-event']));
     }
 
 
