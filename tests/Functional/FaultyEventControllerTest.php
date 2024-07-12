@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use function Symfony\Component\Translation\t;
 
 class FaultyEventControllerTest extends WebTestCase
@@ -19,6 +20,7 @@ class FaultyEventControllerTest extends WebTestCase
     private ?EventFactory $eventFactory;
 
     private $client;
+    private $csrfTokenManager;
 
     protected function setUp(): void
     {
@@ -29,6 +31,7 @@ class FaultyEventControllerTest extends WebTestCase
         $this->adminFactory = $this->client->getContainer()->get(AdminFactory::class);
         $this->eventFactory=$this->client->getContainer()->get(EventFactory::class);
         $this->entityManager = $this->client->getContainer()->get(EntityManagerInterface::class);
+        $this->csrfTokenManager=$this->client->getContainer()->get(CsrfTokenManagerInterface::class);
     }
 
     public function test_authorized_admin_can_access_index(){
@@ -112,32 +115,32 @@ class FaultyEventControllerTest extends WebTestCase
         $this->assertTrue(!$event);
     }
 
-//    public function test_admin_can_delete_event(){
-//        $admin=$this->adminFactory->createAdmin('test-admin','password');
-//        $this->entityManager->persist($admin);
-//        $event=$this->eventFactory->createEvent();
-//        $event->setCreator('test-admin');
-//        $this->entityManager->persist($event);
-//        $this->entityManager->flush();
-//        $this->client->loginUser($admin,'admin');
-//        $this->client->followRedirects();
-//        $crawler=$this->client->request('GET','admin/event/'.$event->getId().'/delete');
-//        $this->assertTrue($crawler->filter('html:contains("<h1>My events</h1>")')->count() > 0);
-//        $this->assertNull($this->entityManager->getRepository(Event::class)->findOneBy(['id'=>$event->getId()]));
-//    }
+    public function test_admin_can_delete_event(){
+        $admin=$this->adminFactory->createAdmin('test-admin','password');
+        $this->entityManager->persist($admin);
+        $event=$this->eventFactory->createEvent();
+        $event->setCreator('test-admin');
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+        $this->client->loginUser($admin,'admin');
+        $this->client->followRedirects();
+        $crawler = $this->client->request('POST', '/admin/event/' . $event->getId());
+        $this->assertTrue($crawler->filter('html:contains("<h1>My events</h1>")')->count() > 0);
+        $this->assertNull($this->entityManager->getRepository(Event::class)->findOneBy(['id'=>$event->getId()]));
+    }
 
-//    public function test_cant_delete_another_admins_event(){
-//        $admin=$this->adminFactory->createAdmin('test-admin','password');
-//        $this->entityManager->persist($admin);
-//        $event=$this->eventFactory->createEvent();// event.creator!=test-admin
-//        $this->entityManager->persist($event);
-//        $this->entityManager->flush();
-//        $this->client->loginUser($admin,'admin');
-//        $this->client->followRedirects();
-//        $crawler=$this->client->request('GET','admin/event/'.$event->getId().'/delete');
-//        $this->assertTrue($crawler->filter('html:contains("<div class="flash error">\nyou&#039;re not authorized to delete this event\n</div>")')->count() > 0);
-//        $this->assertNotNull($this->entityManager->getRepository(Event::class)->findOneBy(['id'=>$event->getId()]));
-//    }
+    public function test_cant_delete_another_admins_event(){
+        $admin=$this->adminFactory->createAdmin('test-admin','password');
+        $this->entityManager->persist($admin);
+        $event=$this->eventFactory->createEvent();// event.creator!=test-admin
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+        $this->client->loginUser($admin,'admin');
+        $this->client->followRedirects();
+        $crawler = $this->client->request('POST', '/admin/event/' . $event->getId());
+        $this->assertTrue($crawler->filter('html:contains("<div class="flash error">\nyou&#039;re not authorized to delete this event\n</div>")')->count() > 0);
+        $this->assertNotNull($this->entityManager->getRepository(Event::class)->findOneBy(['id'=>$event->getId()]));
+    }
 
 
 

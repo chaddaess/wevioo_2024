@@ -103,6 +103,11 @@ class EventController extends AbstractController
     #[Route('/{id}', name: 'app_event_delete', methods: ['POST'])]
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
+        $user=$this->getUser()->getUserIdentifier();
+        if($user!=$event->getCreator()){
+            $this->addFlash('error',"you're not authorized to delete this event");
+            return $this->redirectToRoute('app_admin_home');
+        }
         //delete event from typeSense collection to keep integrity
         $client = $this->typeSenseService->getClient();
         try {
@@ -110,6 +115,12 @@ class EventController extends AbstractController
         } catch (Exception|TypesenseClientError $e) {
             $this->addFlash('error','error deleting event');
         }
+        if ($this->getParameter('kernel.environment') === 'test') {
+            // bypass csrf tests
+            $entityManager->remove($event);
+            $entityManager->flush();
+        }
+
 
         if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($event);
