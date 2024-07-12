@@ -25,7 +25,9 @@ class EventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name',null)
+            ->add('name',null,[
+                'required'=>'true'
+            ])
             ->add('date', null, [
                 'widget' => 'single_text',
             ])
@@ -34,8 +36,10 @@ class EventType extends AbstractType
                 'required'=>true,
             ])
             ->add('address', HiddenType::class,[
+                'required'=>'true'
             ])
             ->add('category',ChoiceType::class,[
+                'required'=>'true',
                 'choices'=>$this->eventCategories
             ])
             ->add('picture', FileType::class, [
