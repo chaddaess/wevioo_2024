@@ -114,7 +114,7 @@ class FaultyEventControllerTest extends WebTestCase
         $form['event[date]'] = '2024-07-12T12:00';
         $form['event[comments]'] = 'This is a test event.';
         $form['event[picture]'] = new UploadedFile('public\data\events.jsonl', 'events.jsonl'); // Simulating invalid file
-        $form['event[coordinates]'] = json_encode([12, 34]);
+        $form['coordinates'] = json_encode([12, 34]);
         $form['event[address]'] = 'test-address';
         $crawler = $this->client->submit($form);
         $this->assertTrue($crawler->filter('html:contains("<li>Please upload a valid image</li>")')->count() > 0);
