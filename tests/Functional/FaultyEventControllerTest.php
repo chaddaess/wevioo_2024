@@ -8,6 +8,7 @@ use App\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FaultyEventControllerTest extends WebTestCase
 {
@@ -75,7 +76,7 @@ class FaultyEventControllerTest extends WebTestCase
         $form['event[date]'] = '2024-07-12T12:00';
         $form['event[comments]'] = 'This is a test event.';
         $form['event[picture]'] = 'no-image.png';
-        $form['event[coordinates]'] = json_encode([12, 34]); // Ensure correct format
+        $form['event[coordinates]'] = json_encode([12, 34]);
         $form['event[address]'] = 'test-address';
         $crawler = $this->client->submit($form);
         $this->assertResponseIsSuccessful();
@@ -96,13 +97,13 @@ class FaultyEventControllerTest extends WebTestCase
         $form['event[category]'] = 'Education';
         $form['event[date]'] = '2024-07-12T12:00';
         $form['event[comments]'] = 'This is a test event.';
-        $form['event[picture]'] = 'no-image.png';
-        $form['event[coordinates]'] = json_encode([12, 34]); // Ensure correct format
+        $form['event[picture]'] = new UploadedFile('public\uploads\doc.docx', 'doc.docx'); // Simulating invalid file
+        $form['event[coordinates]'] = json_encode([12, 34]);
         $form['event[address]'] = 'test-address';
         $crawler = $this->client->submit($form);
-        $this->assertResponseIsSuccessful();
+        $this->assertTrue($crawler->filter('html:contains("<li>Please upload a valid image</li>")')->count() > 0);
         $event=$this->entityManager->getRepository(Event::class)->findOneBy(['name'=>'test-event']);
-        $this->assertNotNull($event,'event should be saved in the database');
+        $this->assertTrue(!$event);
     }
 
 
