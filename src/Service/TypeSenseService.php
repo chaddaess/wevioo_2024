@@ -71,5 +71,9 @@ class TypeSenseService
         $this->client->collections['events']->documents->upsert($document);
 
     }
+    public function deleteDocument(Event $event):void{
+        $this->client->collections['events']->documents[$event->getId()]->delete();
+
+    }
 
 }

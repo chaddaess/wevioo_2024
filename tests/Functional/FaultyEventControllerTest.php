@@ -5,11 +5,15 @@ use App\Entity\Event;
 use App\Factory\AdminFactory;
 use App\Factory\EventFactory;
 use App\Factory\UserFactory;
+use App\Service\TypeSenseService;
 use Doctrine\ORM\EntityManagerInterface;
+use Http\Client\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Typesense\Exceptions\TypesenseClientError;
 use function Symfony\Component\Translation\t;
 
 class FaultyEventControllerTest extends WebTestCase
@@ -20,7 +24,7 @@ class FaultyEventControllerTest extends WebTestCase
     private ?EventFactory $eventFactory;
 
     private $client;
-    private $csrfTokenManager;
+    private ?TypeSenseService $typeSenseService;
 
     protected function setUp(): void
     {
@@ -31,7 +35,7 @@ class FaultyEventControllerTest extends WebTestCase
         $this->adminFactory = $this->client->getContainer()->get(AdminFactory::class);
         $this->eventFactory=$this->client->getContainer()->get(EventFactory::class);
         $this->entityManager = $this->client->getContainer()->get(EntityManagerInterface::class);
-        $this->csrfTokenManager=$this->client->getContainer()->get(CsrfTokenManagerInterface::class);
+        $this->typeSenseService=$this->client->getContainer()->get(TypeSenseService::class);
     }
 
     public function test_authorized_admin_can_access_index(){
@@ -80,7 +84,7 @@ class FaultyEventControllerTest extends WebTestCase
         $form['event[date]'] = '2024-07-12T12:00';
         $form['event[comments]'] = 'This is a test event.';
         $form['event[picture]'] = new UploadedFile('public\images\test-picture.png', 'test-picture');;
-        $form['event[coordinates]'] = json_encode([12, 34]);
+        $form['coordinates'] = json_encode([12, 34]);
         $form['event[address]'] = 'test-address';
         $crawler = $this->client->submit($form);
         $this->assertResponseIsSuccessful();
@@ -89,9 +93,15 @@ class FaultyEventControllerTest extends WebTestCase
         $this->assertNotNull($event,'event should be saved in the database');
         // test if  picture was added to the upload folder
         $this->assertFileExists('public/uploads/'.$event->getPicture());
-        //delete the picture
+        //delete the picture from local directory
         unlink('public/uploads/'.$event->getPicture());
-        //TODO: delete event from typesense cloud
+        //delete test event from typesense cloud
+        try {
+            $this->typeSenseService->deleteDocument($event);
+        }
+        catch (Exception|TypesenseClientError $e) {
+            dump($e->getMessage());
+        }
     }
 
     public function test_admin_cant_submit_an_invalid_file(){
@@ -121,12 +131,19 @@ class FaultyEventControllerTest extends WebTestCase
         $this->entityManager->persist($admin);
         $event=$this->eventFactory->createEvent();
         $event->setCreator('test-admin');
-        $this->entityManager->persist($event);
-        $this->entityManager->flush();
+        try{
+            $this->entityManager->persist($event);
+            $this->entityManager->flush();
+            $this->typeSenseService->loadDocument($event);
+        }catch (Exception $e){
+            dump($e->getMessage());
+        }
+
+
         $this->client->loginUser($admin,'admin');
         $this->client->followRedirects();
         $crawler = $this->client->request('POST', '/admin/event/' . $event->getId());
-        $this->assertTrue($crawler->filter('html:contains("<h1>My events</h1>")')->count() > 0);
+        $this->assertTrue($crawler->filter('html:contains("<div class="flash success">event deleted successfully</div>")')->count() > 0);
         $this->assertNull($this->entityManager->getRepository(Event::class)->findOneBy(['id'=>$event->getId()]));
     }
 

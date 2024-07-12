@@ -20,7 +20,7 @@ class EventFactory
         $event = new Event();
         $event->setName('test-event');
         $event->setCreator('test-admin-1');
-        $event->setLocation(['70.4','20.8']);
+        $event->setLocation([70.4,20.8]);
         $event->setAddress('testland');
         $event->setAttending(0);
         $event->setInterested(0);

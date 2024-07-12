@@ -128,9 +128,8 @@ class EventController extends AbstractController
             return $this->redirectToRoute('app_admin_home');
         }
         //delete event from typeSense collection to keep integrity
-        $client = $this->typeSenseService->getClient();
         try {
-            $client->collections['events']->documents[$event->getId()]->delete();
+            $this->typeSenseService->deleteDocument($event);
         } catch (Exception|TypesenseClientError $e) {
             $this->addFlash('error','error deleting event');
             return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
