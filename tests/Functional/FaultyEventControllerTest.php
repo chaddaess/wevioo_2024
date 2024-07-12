@@ -75,13 +75,18 @@ class FaultyEventControllerTest extends WebTestCase
         $form['event[category]'] = 'Education';
         $form['event[date]'] = '2024-07-12T12:00';
         $form['event[comments]'] = 'This is a test event.';
-        $form['event[picture]'] = 'no-image.png';
+        $form['event[picture]'] = new UploadedFile('public\images\test-picture.png', 'test-picture');;
         $form['event[coordinates]'] = json_encode([12, 34]);
         $form['event[address]'] = 'test-address';
         $crawler = $this->client->submit($form);
         $this->assertResponseIsSuccessful();
+        // test if the event was saved to database
         $event=$this->entityManager->getRepository(Event::class)->findOneBy(['name'=>'test-event']);
         $this->assertNotNull($event,'event should be saved in the database');
+        // test if  picture was added to the upload folder
+        $this->assertFileExists('public/uploads/'.$event->getPicture());
+        //delete the picture
+        unlink('public/uploads/'.$event->getPicture());
     }
 
     public function test_admin_cant_submit_an_invalid_file(){
@@ -97,7 +102,7 @@ class FaultyEventControllerTest extends WebTestCase
         $form['event[category]'] = 'Education';
         $form['event[date]'] = '2024-07-12T12:00';
         $form['event[comments]'] = 'This is a test event.';
-        $form['event[picture]'] = new UploadedFile('public\uploads\doc.docx', 'doc.docx'); // Simulating invalid file
+        $form['event[picture]'] = new UploadedFile('public\data\events.jsonl', 'events.jsonl'); // Simulating invalid file
         $form['event[coordinates]'] = json_encode([12, 34]);
         $form['event[address]'] = 'test-address';
         $crawler = $this->client->submit($form);
