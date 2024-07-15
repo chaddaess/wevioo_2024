@@ -63,5 +63,17 @@
             </a>
         </div>
     </div>
+    <script>
+        var botmanWidget = {
+            frameEndpoint: '{{ path("chatframe") }}',
+            chatServer: '{{ path("message") }}',
+            introMessage: 'Hello, how can I help you today?',
+            title: 'My Chatbot',
+            mainColor: '#456765',
+            bubbleBackground: '#ff76f4',
+            aboutText: ''
+        };
+    </script>
+    <script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
 
 {% endblock %}

@@ -63,10 +63,10 @@ class SetTypeSenseEventSchema extends Command
         $client=$this->typeSenseService->getClient();
         try{
             $client->collections->create($eventSchema);
-            $output->writeln('event schema set successfully ');
+            $output->writeln('event schema set successfully ✔️');
 
         }catch (\Exception $e){
-            $output->writeln('error setting schema');
+            $output->writeln('error setting schema ❌: ');
             $output->writeln($e->getMessage());
             return Command::FAILURE;
         }

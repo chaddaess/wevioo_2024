@@ -31,9 +31,9 @@ class TypeSenseService
 
 
     public function search(
-        string $collectionName,
-        string $keywords,
-        array $filters
+        string $collectionName='events',
+        string $keywords='*',
+        array $filters=[]
 
     ){
         $filterQueries = [];

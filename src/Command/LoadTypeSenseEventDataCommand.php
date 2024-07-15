@@ -49,11 +49,10 @@ class LoadTypeSenseEventDataCommand extends Command
         }
         $client=$this->typeSenseService->getClient();
         try{
-            $output->writeln("Number of documents to import: " . count($documents));
             $client->collections['events']->documents->import($documents,['action' => 'upsert']);
-            $output->writeln("data loaded successfully");
+            $output->writeln(count($documents)." events loaded successfully ✔️");
         }catch (\Exception $e){
-            $output->writeln("error loading data");
+            $output->writeln("error loading data ❌: ");
             $output->writeln($e->getMessage());
             return Command::FAILURE;
         }
