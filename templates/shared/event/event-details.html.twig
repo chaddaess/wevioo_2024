@@ -90,7 +90,6 @@
             </div>
         </div>
 
-        {% if event.comments!=""%}
             <div class="row small">
                     <p style="font-weight: bold;margin-bottom: 1.5em">Details</p>
                 <div style="color: #555555;font-size: 0.9rem;display: flex;align-items: center">
@@ -105,10 +104,10 @@
                 </div>
 
                 <br>
-
+                {% if event.comments!=""%}
                 <div style="color: #555555;font-size: 0.9rem">{{ event.comments }}</div>
+                {% endif %}
             </div>
-        {% endif %}
 
         <div class="row small">
             <p style="font-weight: bold;margin-bottom: 1.5em">Tickets</p>

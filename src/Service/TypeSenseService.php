@@ -63,8 +63,8 @@ class TypeSenseService
             'creator'=>$event->getCreator()??'uknown',
             'attending'=>(int)$event->getAttending()??0,
             'interested'=>(int)$event->getInterested()??0,
-            'ticketLink'=>$event->getTicketLink()??'',
-            'comments'=>$event->getComments()??'',
+            'ticketLink'=>$event->getTicketLink()??'On site',
+            'comments'=>$event->getComments()??'No extra comments were provided',
             'location'=>$event->getLocation(),
             'address'=>$event->getAddress(),
         ];
