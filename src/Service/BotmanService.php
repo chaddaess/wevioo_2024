@@ -56,8 +56,8 @@ class BotmanService
         }else{
             $name=$events[0]["document"]["name"];
             $id=$events[0]["document"]["id"];
-            $path=$_ENV['HOSTNAME']."/event/$id";
-            $htmlOutput= "<a href=\"$path\">$name</a><br>";
+            $path=$_ENV['HOSTNAME']."/admin/event/$id";
+            $htmlOutput = "<a href=\"$path\" target=\"_blank\">$name</a><br>";
             if($keywords=='*'){
                 return "Since you didn't provide any keywords, here's the most popular event at the moment 🪩"."<br>".$htmlOutput;
             }

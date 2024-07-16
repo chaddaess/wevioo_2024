@@ -39,7 +39,7 @@ class HomeController extends AbstractController
                 $filters['category']=$category;
             }
             if($date){
-                $filters['date']='<='.$date.'&& date >='.(new \DateTime())->getTimestamp();
+                $filters['date']=(new \DateTime())->getTimestamp().'..'.$date;
             }
             if($location){
                 $filters['location']='('.$location[0].','.$location[1].',120km)';

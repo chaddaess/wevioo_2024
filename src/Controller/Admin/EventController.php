@@ -75,7 +75,7 @@ class EventController extends AbstractController
     {
         $user=$this->getUser()->getUserIdentifier();
         if($user!=$event->getCreator()){
-            $this->addFlash('error',"you're not authorized to edit this event");
+            $this->addFlash('error',"you're not authorized to view this event");
             return $this->redirectToRoute('app_admin_home');
         }
         return $this->render('shared/event/event-details.html.twig', [
