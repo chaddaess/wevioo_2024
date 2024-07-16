@@ -21,9 +21,9 @@ class BotmanService
     public function handleUnknown():string{
         return "Sorry, I was not trained to answer that"."<br>".
         "Here's a list of things I can do:"."<br>".
-        "👉 set your event schema (/set)  "."<br>".
-        "👉 load your local events to the cloud (/load) "."<br>".
-        "👉search for events by keywords (/search)"."<br>";
+        "👉 set your event schema (<b>/set</b> command)  "."<br>".
+        "👉 load your local events to the cloud (<b>/load</b> command) "."<br>".
+        "👉search for events by keywords (<b>/search</b> command)"."<br>";
     }
     public  function handleCreateSchema(): string
     {
@@ -58,7 +58,10 @@ class BotmanService
             $id=$events[0]["document"]["id"];
             $path=$_ENV['HOSTNAME']."/event/$id";
             $htmlOutput= "<a href=\"$path\">$name</a><br>";
-            return "Sure ! Here is the top event corresponding to your search: "."<br>".$htmlOutput;
+            if($keywords=='*'){
+                return "Since you didn't provide any keywords, here's the most popular event at the moment 🪩"."<br>".$htmlOutput;
+            }
+            return "Sure ! Here is the top event corresponding to your search 🕺: "."<br>".$htmlOutput;
 
         }
     }

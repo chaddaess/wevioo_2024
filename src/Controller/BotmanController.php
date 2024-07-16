@@ -27,7 +27,7 @@ class BotmanController extends AbstractController
 
         $botman = BotManFactory::create([], new SymfonyCache($adapter), $request);
 
-        $botman->hears('hello', static function (BotMan $bot) {
+        $botman->hears('.*\b(hello|hi|hey|good morning)\b.*', static function (BotMan $bot) {
             $bot->typesAndWaits(1);
             $bot->reply('Hello 🤗 How can I be of assistance?');
         });
@@ -39,6 +39,10 @@ class BotmanController extends AbstractController
         $botman->hears('/set',static function (BotMan $bot) use ($botService) {
             $bot->typesAndWaits(1);
             $bot->reply($botService->handleCreateSchema());
+        });
+        $botman->hears('/search',static function (BotMan $bot,$keywords='*') use ($botService) {
+            $bot->typesAndWaits(1);
+            $bot->reply($botService->handleSearch($keywords));
         });
         $botman->hears('/search {keywords}',static function (BotMan $bot,$keywords) use ($botService) {
             $bot->typesAndWaits(1);
