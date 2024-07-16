@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Service\EventService;
 use App\Service\TypeSenseService;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -29,7 +30,6 @@ class HomeController extends AbstractController
         $hits=[];
         $filters=[];
         if ($request->isMethod('POST')) {
-//            dd($request->request->get('coordinates'));
             $keywords=$request->request->get('keywords')?$request->request->get('keywords'):"*";
             $category=$request->request->get('category')?$request->request->get('category'):null;
             $location=$request->request->get('coordinates')?json_decode($request->request->get('coordinates')):null;
@@ -44,7 +44,12 @@ class HomeController extends AbstractController
             if($location){
                 $filters['location']='('.$location[0].','.$location[1].',120km)';
             }
-            $response=$this->typeSenseService->search('events',$keywords,$filters);
+            try{
+                $response=$this->typeSenseService->search('events',$keywords,$filters);
+
+            }catch (Exception $e){
+                $this->addFlash('error','error searching: '.$e->getMessage());
+            }
             $hits=$response;
 //            dd($response);
 

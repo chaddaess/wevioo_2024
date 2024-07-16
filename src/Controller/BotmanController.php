@@ -40,6 +40,10 @@ class BotmanController extends AbstractController
             $bot->typesAndWaits(1);
             $bot->reply($botService->handleCreateSchema());
         });
+        $botman->hears('/search {keywords}',static function (BotMan $bot,$keywords) use ($botService) {
+            $bot->typesAndWaits(1);
+            $bot->reply($botService->handleSearch($keywords));
+        });
 
 
 

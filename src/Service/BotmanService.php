@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Console\Command\Command;
@@ -12,10 +13,11 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class BotmanService
 {
     private $application;
-    public function __construct( private  readonly TypeSenseService $typeSenseService,KernelInterface $kernel, private  readonly Security $security){
+    public function __construct( private readonly TypeSenseService $typeSenseService,KernelInterface $kernel){
         $this->application = new Application($kernel);
         $this->application->setAutoExit(false);
     }
+
     public function handleUnknown():string{
         return "Sorry, I was not trained to answer that"."<br>".
         "Here's a list of things I can do:"."<br>".
@@ -33,7 +35,6 @@ class BotmanService
         return $output->fetch();
     }
 
-
     public  function handleLoadData(): string
     {
         $input = new ArrayInput([
@@ -43,6 +44,26 @@ class BotmanService
         $this->application->run($input, $output);
         return $output->fetch();
     }
+    public function handleSearch($keywords):string{
+        try{
+            $events=$this->typeSenseService->search('events',$keywords,[]);
+
+        }catch (Exception $e){
+            return('error searching: '.$e->getMessage());
+        }
+        if(!$events){
+            return "Sorry, I couldn't find any event corresponding to this search";
+        }else{
+            $name=$events[0]["document"]["name"];
+            $id=$events[0]["document"]["id"];
+            $path=$_ENV['HOSTNAME']."/event/$id";
+            $htmlOutput= "<a href=\"$path\">$name</a><br>";
+            return "Sure ! Here is the top event corresponding to your search: "."<br>".$htmlOutput;
+
+        }
+    }
+
+
 
 
 }
